@@ -1,0 +1,10 @@
+@* File: Hetro/Views/Account/AccessDenied.cshtml *@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<header class="text-center text-danger mt-5">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p class="lead">You do not have permission to access this resource.</p>
+    <p><a asp-controller="Home" asp-action="Index">Return to Home</a></p>
+</header>

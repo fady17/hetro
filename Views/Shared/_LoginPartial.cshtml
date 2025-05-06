@@ -1,0 +1,30 @@
+@* File: Hetro/Views/Shared/_LoginPartial.cshtml *@
+@using Microsoft.AspNetCore.Identity
+
+<ul class="navbar-nav">
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <li class="nav-item">
+        @* Link to the Profile page *@
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Profile" title="Your Profile">Hello @(User.Identity.Name ?? "User")!</a>
+    </li>
+    <li class="nav-item">
+        @* Form posts to the Logout action *@
+        <form id="logoutForm" class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+             @Html.AntiForgeryToken() @* Add AntiForgeryToken for POST *@
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+         @* Link to the Login action which triggers OIDC challenge *@
+         <a class="nav-link text-dark" id="login" asp-controller="Account" asp-action="Login">Login</a>
+    </li>
+     @* Optionally add Register link - points to IdP registration *@
+     @* <li class="nav-item">
+         <a class="nav-link text-dark" href="https://localhost:7223/Identity/Account/Register">Register</a> @* Direct link to IdP registration *@
+     @* </li>  *@
+}
+</ul>
