@@ -1,4 +1,5 @@
-@* File: Hetro/Views/Account/Profile.cshtml *@
+@* File: HetroClothingClient/Views/Account/Profile.cshtml *@
+@using System.Security.Claims // Make sure this is at the top
 @{
     ViewData["Title"] = "Your Profile";
 }
@@ -6,29 +7,58 @@
 <div class="container mt-4">
     <h1 class="mb-4">@ViewData["Title"]</h1>
 
+    <partial name="_StatusMessage" model="@TempData["StatusMessage"]" />
+
     <div class="card shadow-sm">
         <div class="card-header">
-            User Claims
+            Your Rally Account Information
         </div>
         <div class="card-body">
             @if (User.Identity?.IsAuthenticated ?? false)
             {
                 <dl class="row">
-                    @foreach (var claim in User.Claims.OrderBy(c => c.Type)) // Order claims for readability
-                    {
-                        <dt class="col-sm-3 text-muted">@claim.Type</dt>
-                        <dd class="col-sm-9">@claim.Value</dd>
+                    @* --- Display Specific, User-Friendly Claims --- *@
+                    @{
+                        var subjectId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+                        var name = User.FindFirstValue(ClaimTypes.Name) ?? User.FindFirstValue("name");
+                        var email = User.FindFirstValue(ClaimTypes.Email) ?? User.FindFirstValue("email");
+                        var emailVerified = User.FindFirstValue("email_verified");
                     }
+
+                    @if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        <dt class="col-sm-3 text-muted">Name:</dt>
+                        <dd class="col-sm-9">@name</dd>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(email))
+                    {
+                        <dt class="col-sm-3 text-muted">Email:</dt>
+                        <dd class="col-sm-9">@email</dd>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(emailVerified))
+                    {
+                        <dt class="col-sm-3 text-muted">Email Verified:</dt>
+                        <dd class="col-sm-9">@(bool.TryParse(emailVerified, out var ev) && ev ? "Yes" : "No")</dd>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(subjectId))
+                    {
+                        <dt class="col-sm-3 text-muted">Rally Account ID:</dt>
+                        <dd class="col-sm-9">@subjectId</dd>
+                    }
+                    @* Add any other specific claims you want to show, e.g., phone_number if available and requested *@
+
                 </dl>
             }
             else
             {
-                <p>Not logged in.</p>
+                <p>You are not logged in.</p>
             }
         </div>
-         <div class="card-footer text-end">
-              <a asp-controller="Home" asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Shop</a>
-         </div>
+        <div class="card-footer text-end">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Shop</a>
+        </div>
     </div>
-
 </div>

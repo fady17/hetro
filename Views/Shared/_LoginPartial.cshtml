@@ -1,12 +1,17 @@
 @* File: Hetro/Views/Shared/_LoginPartial.cshtml *@
 @using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
 <ul class="navbar-nav">
 @if (User.Identity?.IsAuthenticated ?? false)
 {
     <li class="nav-item">
-        @* Link to the Profile page *@
-        <a class="nav-link text-dark" asp-controller="Account" asp-action="Profile" title="Your Profile">Hello @(User.Identity.Name ?? "User")!</a>
+        @* Display Email claim if available, otherwise fallback to Name *@
+        @{
+            var email = User.FindFirstValue(ClaimTypes.Email) ?? User.FindFirstValue("email");
+            var displayName = string.IsNullOrWhiteSpace(email) ? (User.Identity.Name ?? "User") : email;
+        }
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Profile" title="Your Profile">Hello @displayName!</a>
     </li>
     <li class="nav-item">
         @* Form posts to the Logout action *@

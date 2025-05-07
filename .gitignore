@@ -210,3 +210,30 @@ secrets/ # Secrets directory for docker build context
 *.db
 *.db-shm
 *.db-wal
+
+# Ignore obj/Docker/empty for User Secrets with Docker
+**/obj/Docker/empty/
+
+# Ignore Bundler packages
+**/bundle/*
+# Ignore output of webpack, vite etc if used for frontend assets
+**/dist/*
+**/build/*
+node_modules/
+
+# Rider specific folders
+**/Exported/
+.idea.solution/
+*.sln.iml
+
+
+
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+ehthumbs_vista.db
+
+hetro_client_dev.db

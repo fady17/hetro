@@ -12,6 +12,8 @@ namespace Hetro.Models
         public string? Email { get; set; } // From IdP 'email' claim
         public bool EmailVerified { get; set; } // From IdP 'email_verified' claim
         public string? Name { get; set; } // From IdP 'name' claim
+        public string? DefaultShippingAddress { get; set; }
+        public string? PhoneNumber { get; set; }
         public DateTime LastLoginUtc { get; set; }
 
         // Navigation property for cart (defined next)

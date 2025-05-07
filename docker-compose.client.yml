@@ -1,0 +1,50 @@
+# HetroClothingClient/docker-compose.client.yml
+# Example for running ONLY the Hetro client, assuming IdP is external
+
+version: '3.8'
+
+services:
+  hetro-clothing-client:
+    container_name: hetro-clothing-client
+    build:
+      context: . # Assumes Dockerfile is in the same directory
+      dockerfile: Dockerfile
+    ports:
+      # Map a host port to the container's exposed port 8080
+      # Example: - "8081:8080" # Hetro client on host port 8081
+      # For local testing against local IdP, find an available port for the client
+      - "7272:8080" # Assuming Hetro client runs on host port 7272 for HTTPS (proxy to 8080 HTTP)
+    environment:
+      # CRITICAL: Set these in your environment or a .env file for this compose
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development} # Or Staging/Production
+      - ASPNETCORE_URLS=http://+:8080 # Listen on HTTP internally; HTTPS handled by reverse proxy or dev tools
+      
+      # --- Database Configuration ---
+      # Points to a SQLite file INSIDE the container. Mount a volume to persist.
+      - ConnectionStrings__SqliteConnection=Data Source=/app/data/hetro_client.db
+
+      # --- OIDC Configuration ---
+      # Rally IdP URL (IMPORTANT: This MUST be reachable from the client container)
+      # If Rally IdP is also dockerized on the same network, use its service name: "https://rally-idp:7223"
+      # If Rally IdP is running on the host machine (e.g., via dotnet run):
+      #   - On Windows/macOS Docker Desktop: use "https://host.docker.internal:7223"
+      #   - On Linux Docker: this is trickier, often need IdP to listen on 0.0.0.0 or use host networking for IdP
+      - OIDC__Authority=https://host.docker.internal:7223 # For Docker Desktop dev against host-run IdP
+      - OIDC__ClientId=hetro-clothing-store
+      - OIDC__ClientSecret=${OIDC_HETRO_CLIENT_SECRET} # Load from host environment variable
+      
+      # Forwarded Headers (if client itself is behind another proxy layer, e.g. Nginx for client)
+      # - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+    volumes:
+      # Mount a volume to persist the SQLite database
+      - hetro_client_db_data:/app/data
+    restart: unless-stopped
+    # networks: # If connecting to other services on the same Docker network
+    #   - rally_network
+
+volumes:
+  hetro_client_db_data:
+
+# networks: # Define if needed
+#   rally_network:
+#     external: true # If defined by another docker-compose file (e.g., for the IdP)
