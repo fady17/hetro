@@ -204,7 +204,8 @@ secrets/ # Secrets directory for docker build context
 # Entity Framework Core migration files snapshot file (some prefer not to commit)
 # Uncomment if you don't want to version control the snapshot
 # **/*DbContextModelSnapshot.cs
-
+hetro_client_dev.db-shm
+hetro_client_dev.db-wal
 # Rider temporary files
 **/.idea/.idea.*
 hetro_client_dev.db
