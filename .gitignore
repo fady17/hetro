@@ -237,3 +237,5 @@ ehthumbs.db
 ehthumbs_vista.db
 
 hetro_client_dev.db
+
+Data/Migrations/
